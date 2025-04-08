@@ -6,15 +6,13 @@ import { exampleAtom } from '@/atoms/example.atom';
 
 export default function ServerInteraction() {
   
-  const [state, action1] = useActionJotai(exampleAtom, actionExampleIncr);
+  const [state, action] = useActionJotai(exampleAtom, actionExampleIncr);
 
   return (
     <div>
       {state}
       <br/>
-      Server : <button onClick={action1}>+1</button>
-      <br/>
-      {/* Server : <button onClick={action2} >Reset</button> */}
+      Server : <button onClick={action}>+1</button>
     </div>
   )
 }

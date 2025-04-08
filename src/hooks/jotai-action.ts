@@ -1,11 +1,11 @@
 'use client';
 
 import { Atom, useAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export function useActionJotai<T>(
   atom: Atom<T>,
-  action: (state: T) => Promise<T>
+  action: (state: T) => Promise<T> 
 ): [T, () => void] {
 
   const [value, setValue] = useAtom<T>(atom);
@@ -16,3 +16,22 @@ export function useActionJotai<T>(
 
   return [value, jotaiAction];
 };
+
+
+type PromiseInObject<T> = { [key: string]: (state: T) => Promise<T> };
+export function useMultiActionJotai<T, K extends PromiseInObject<T>>(
+  atom: Atom<T>,
+  actions: K
+): [T, Record<keyof K, () => void>] {
+  
+  const [value, setValue] = useAtom<T>(atom);
+
+  const jotaiActions = useMemo(( ) => Object.entries(actions).reduce((acc, [key, action]) => {
+    return {
+      ...acc,
+      [key]: () => action(value).then(setValue)
+    };
+  }, {}), [actions, value])
+
+  return [value, jotaiActions as Record<keyof K, () => void>]
+}
