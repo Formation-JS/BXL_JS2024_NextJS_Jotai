@@ -1,4 +1,4 @@
 import { atom } from 'jotai';
 
 
-export const exampleAtom = atom(0);
+export const exampleAtom = atom<number>(42);
